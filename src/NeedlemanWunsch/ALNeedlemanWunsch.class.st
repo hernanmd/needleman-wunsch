@@ -55,7 +55,7 @@ ALNeedlemanWunsch >> align: seq1 with: seq2 [
 ]
 
 { #category : #initialization }
-ALNeedlemanWunsch >> alignFromArray: seq1 with: seq2 [
+ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 
 	| lengthSeq1 lengthSeq2 score match delete insert align1 align2 ti tj scoreCurrent scoreDiagonal scoreUp scoreLeft |
 
@@ -122,7 +122,7 @@ ALNeedlemanWunsch >> alignFromArray: seq1 with: seq2 [
 { #category : #accessing }
 ALNeedlemanWunsch >> alignFromString: seq1 with: seq2 [ 
 
-	self alignFromArray: seq1 with: seq2.
+	self alignFromSequenceableCollection: seq1 with: seq2.
 	self firstSequence: (self firstSequence joinUsing: '').
 	self secondSequence: (self secondSequence joinUsing: '')
 ]
