@@ -1,16 +1,32 @@
 "
-Implements a Pairwise Sequence Aligner which expect to read two input sequences (firstSequence and secondSequence) and calculate their optimal global sequence alignment using the algorithm developed by Saul B. Needleman and Christian D. Wunsch and published in 1970, known as Needleman-Wunsch.
+Implements a Pairwise Sequence Aligner which expect to read two input sequences (`firstSequence:` and `secondSequence:`) and calculate their optimal global (end to end) sequence alignment using the algorithm developed by Saul B. Needleman and Christian D. Wunsch and published in 1970, known as Needleman-Wunsch.
 
 It is used to identify regions of similarity between two sequences. When applied to two biological sequences (protein or nucleic acid), it may indicate functional, structural and/or evolutionary relationships between them. It is most useful when the sequences in the query set are similar and of roughly equal size. (This does not mean global alignments cannot start and/or end in gaps.)
 
-Internal Representation and Key Implementation Points.
+## Usage
 
-# Instance Variables
-	firstSequence:		<Object>
-	gapPenalty:		<Object>
-	matchAward:		<Object>
-	mismatchPenalty:		<Object>
-	secondSequence:		<Object>
+```language=Pharo
+""Obtain the resulting alignment as Association""
+(ALNeedlemanWunsch align: 'IMPRESIONABLE' with: 'IMPRESO') asAssociation.
+
+""You can use it directly applying to Strings, and get the result as a Collection""
+('IMPRESIONABLE' alignUsingNWWith: 'IMPRESO') asArray.
+
+""More verbose usage using `firstSequence:` and `secondSequence:` to set the two sequences to be compared. They can be two `String` or two `Collection`s containing `String`s.""
+ALNeedlemanWunsch new
+	firstSequence: 'IMPRESIONABLE';
+	secondSequence: 'IMPRESO';
+	align.
+```
+
+## Scoring
+
+Given scores for perfect matches, mismatches, and gap penalties, the algorithm will produce an optimal alignment.
+
+- The algorithm uses a ""scoring system"": it consists of ""residue"" substitution scores (i.e. score for each possible residue alignment), plus penalties for gaps.
+- The alignment score is the sum of substitution scores and gap penalties.
+- It is possible to change the scoring system sending the messages `matchAward:` , `mismatchPenalty:` and `gapPenalty:`.
+- More complicated scoring systems could be used through Evolutionary substitution matrices (see BioSmalltalk for BLOSUM and PAM matrices).
 
 # Implementation Points
 
@@ -41,17 +57,17 @@ ALNeedlemanWunsch class >> align: seq1 with: seq2 [
 
 { #category : #initialization }
 ALNeedlemanWunsch >> align [
-	"Answer the receiver"
+	"Align the receiver's configured sequences. Answer the receiver"
 
-	self 
-		align: self firstSequence 
-		with: self secondSequence 
+	self
+		align: self firstSequence
+		with: self secondSequence
 ]
 
 { #category : #initialization }
 ALNeedlemanWunsch >> align: seq1 with: seq2 [
 
-	^ seq1 align: seq2 using: self
+	^ seq1 alignUsingNW: seq2 for: self
 ]
 
 { #category : #initialization }
@@ -120,11 +136,27 @@ ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 ]
 
 { #category : #accessing }
-ALNeedlemanWunsch >> alignFromString: seq1 with: seq2 [ 
+ALNeedlemanWunsch >> alignFromString: seq1 with: seq2 [
 
 	self alignFromSequenceableCollection: seq1 with: seq2.
 	self firstSequence: (self firstSequence joinUsing: '').
 	self secondSequence: (self secondSequence joinUsing: '')
+]
+
+{ #category : #converting }
+ALNeedlemanWunsch >> asArray [
+	"Answer the receiver's first and second sequence as <Array>"
+	
+	^ Array
+		with: self firstSequence
+		with: self secondSequence
+]
+
+{ #category : #converting }
+ALNeedlemanWunsch >> asAssociation [
+	"Answer the receiver's first and second sequence as <Association>"
+	
+	^ self firstSequence -> self secondSequence
 ]
 
 { #category : #initialization }

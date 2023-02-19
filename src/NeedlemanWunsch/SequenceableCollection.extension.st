@@ -1,7 +1,7 @@
 Extension { #name : #SequenceableCollection }
 
 { #category : #'*NeedlemanWunsch' }
-SequenceableCollection >> align: seq2 using: anAligner [
+SequenceableCollection >> alignUsingNW: seq2 for: anAligner [
 
 	^ anAligner alignFromSequenceableCollection: self with: seq2
 ]
