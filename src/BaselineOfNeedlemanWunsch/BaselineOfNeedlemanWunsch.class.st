@@ -11,10 +11,10 @@ BaselineOfNeedlemanWunsch >> baseline: spec [
 		for: #(common)
 		do: [
 		    spec
-				baseline: 'PolyMath'
-				with: [ spec repository: 'github://PolyMathOrg/PolyMath:master/src' ].
+				baseline: 'PolyMathDataStructures'
+				with: [ spec repository: 'github://PolyMathOrg/PolyMath-DataStructures/src' ].
 			spec
-				package: 'NeedlemanWunsch'			with: [ spec requires: #(PolyMath) ];
+				package: 'NeedlemanWunsch'			with: [ spec requires: #(PolyMathDataStructures) ];
 				package: 'NeedlemanWunsch-Tests'	with: [ spec requires: #(NeedlemanWunsch) ].
 			spec
 				group: 'Core' 						with: #('NeedlemanWunsch');
