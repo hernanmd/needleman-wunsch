@@ -18,7 +18,7 @@ NeedlemanTest >> setUp [
 ]
 
 { #category : #tests }
-NeedlemanTest >> testAlignWith [
+NeedlemanTest >> testAlignWithCollectionsOfStrings [
 
 	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
 	expectedAlign1 := { 'a' . 'b' . 'c' . 'd' . 'e' . 'f' . '-' . '-' . '-' }.
@@ -63,6 +63,57 @@ NeedlemanTest >> testAlignWithDNASequence [
 ]
 
 { #category : #tests }
+NeedlemanTest >> testAlignWithDNASequenceLong [
+
+	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
+
+	expectedAlign1 := 'ATGGTGCTGTCTCCT---GCCGACAAGACCAACGTCAAGGCCGCCTGGGGTAAGGTCGG-CGCG
+CACGCTGGC-GAGTATGGTGCGGAGGCCCTGGAGAGGATGTTCCTG-T-CCTTCCCCACCACC
+AAGACCTACTTCCCGCACTTCGACCTG--AGCCACGGCTCTGCCCAAGTTAAGGGCCACGGC
+AAGAAGGTGGCCGACGCGCTGACCAACGCCG-TGGCGCACGTGGACGACATGCCCAACGCG
+CTGTCCGCCCTGAGCGACCTGCACGCGCACAAGCTTCGGGTGGA-CCCGGTCAACTTCAAG
+CTCCTAAGCCACTGCCTGCTGGTGACCCTGGC-CGCCCACCTCCCCGCCGAGTTCACCCCT
+GCGGTGCACGCTTCCCTGGACAAGTTCCTGGCTTCTGTGAGCACCGTGCTGACCTCCAAA
+TACCGTTAA'.
+	expectedAlign2 := 'ATGGTGC--TCT-CTGGGGAAGACAAAAGCAACATCAAGGCTGCCTGGGGGAAGATTGGTGGC-
+CATGGT-GCTGAATATGGAGCTGAAGCCCTGGAAAGGATGTT--TGCTAGCTTCCCCACCACC
+AAGACCTACTTTCCTCACTTTGA--TGTAAGCCACGGCTCTGCCCAGGTCAAGGGTCACGGC
+AAGAAGGTCGCCGATGCGCTGGCCAGTGCTGCAGGC-CACCTCGATGACCTGCCCGGTGCC
+TTGTCTGCTCTGAGCGACCTGCATGCCCACAAGCTGCGTGTGGATCCC-GTCAACTTCAAG
+CTCCTGAGCCACTGCCTGCTGGTGACCTTGGCTAG-CCACCACCCTGCCGATTTCACCCCC
+GCGGTACATGCCTCTCTGGACAAATTCCTTGCCTCTGTGAGCACCGTGCTGACCTCCAAG
+TACCGTTAA'.
+	expected := expectedAlign1 -> expectedAlign2.
+
+	inputSeq1 := 'ATGGTGCTGTCTCCTGCCGACAAGACCAACGTCAAGGCCGCCTGGGGTAAGGTCGGCGCG
+CACGCTGGCGAGTATGGTGCGGAGGCCCTGGAGAGGATGTTCCTGTCCTTCCCCACCACC
+AAGACCTACTTCCCGCACTTCGACCTGAGCCACGGCTCTGCCCAAGTTAAGGGCCACGGC
+AAGAAGGTGGCCGACGCGCTGACCAACGCCGTGGCGCACGTGGACGACATGCCCAACGCG
+CTGTCCGCCCTGAGCGACCTGCACGCGCACAAGCTTCGGGTGGACCCGGTCAACTTCAAG
+CTCCTAAGCCACTGCCTGCTGGTGACCCTGGCCGCCCACCTCCCCGCCGAGTTCACCCCT
+GCGGTGCACGCTTCCCTGGACAAGTTCCTGGCTTCTGTGAGCACCGTGCTGACCTCCAAA
+TACCGTTAA'.
+	inputSeq2 := 'ATGGTGCTCTCTGGGGAAGACAAAAGCAACATCAAGGCTGCCTGGGGGAAGATTGGTGGC
+CATGGTGCTGAATATGGAGCTGAAGCCCTGGAAAGGATGTTTGCTAGCTTCCCCACCACC
+AAGACCTACTTTCCTCACTTTGATGTAAGCCACGGCTCTGCCCAGGTCAAGGGTCACGGC
+AAGAAGGTCGCCGATGCGCTGGCCAGTGCTGCAGGCCACCTCGATGACCTGCCCGGTGCC
+TTGTCTGCTCTGAGCGACCTGCATGCCCACAAGCTGCGTGTGGATCCCGTCAACTTCAAG
+CTCCTGAGCCACTGCCTGCTGGTGACCTTGGCTAGCCACCACCCTGCCGATTTCACCCCC
+GCGGTACATGCCTCTCTGGACAAATTCCTTGCCTCTGTGAGCACCGTGCTGACCTCCAAG
+TACCGTTAA'.
+
+	aligner align: inputSeq1 with: inputSeq2.
+
+	self
+		assertCollection: aligner firstSequence
+		hasSameElements: expected key.
+
+	self
+		assertCollection: aligner secondSequence
+		hasSameElements: expected value
+]
+
+{ #category : #tests }
 NeedlemanTest >> testAlignWithEmptySequences [
 
 	| expected inputSeq1 inputSeq2 |
@@ -71,6 +122,121 @@ NeedlemanTest >> testAlignWithEmptySequences [
 
 	inputSeq1 := #().
 	inputSeq2 := #().
+
+	aligner align: inputSeq1 with: inputSeq2.
+
+	self
+		assertCollection: aligner firstSequence
+		hasSameElements: expected key.
+
+	self
+		assertCollection: aligner secondSequence
+		hasSameElements: expected value
+]
+
+{ #category : #tests }
+NeedlemanTest >> testAlignWithWordSequence1 [
+
+	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
+
+	expectedAlign1 := 'IMPRESIONABLE'.
+	expectedAlign2 := 'IMPRES-O-----'.
+	expected := expectedAlign1 -> expectedAlign2.
+
+	inputSeq1 := 'IMPRESIONABLE'.
+	inputSeq2 := 'IMPRESO'.
+
+	aligner align: inputSeq1 with: inputSeq2.
+
+	self
+		assertCollection: aligner firstSequence
+		hasSameElements: expected key.
+
+	self
+		assertCollection: aligner secondSequence
+		hasSameElements: expected value
+]
+
+{ #category : #tests }
+NeedlemanTest >> testAlignWithWordSequence1Reverse [
+
+	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
+
+	expectedAlign1 := 'IMPRES-O-----'.
+	expectedAlign2 := 'IMPRESIONABLE'.
+	expected := expectedAlign1 -> expectedAlign2.
+
+	inputSeq1 := 'IMPRESO'.
+	inputSeq2 := 'IMPRESIONABLE'.
+
+	aligner align: inputSeq1 with: inputSeq2.
+
+	self
+		assertCollection: aligner firstSequence
+		hasSameElements: expected key.
+
+	self
+		assertCollection: aligner secondSequence
+		hasSameElements: expected value
+]
+
+{ #category : #tests }
+NeedlemanTest >> testAlignWithWordSequence2 [
+
+	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
+
+	expectedAlign1 := 'IMPRES-IONABLE'.
+	expectedAlign2 := 'INCUESTIONABLE'.
+	expected := expectedAlign1 -> expectedAlign2.
+
+	inputSeq1 := 'IMPRESIONABLE'.
+	inputSeq2 := 'INCUESTIONABLE'.
+
+	aligner align: inputSeq1 with: inputSeq2.
+
+	self
+		assertCollection: aligner firstSequence
+		hasSameElements: expected key.
+
+	self
+		assertCollection: aligner secondSequence
+		hasSameElements: expected value
+]
+
+{ #category : #tests }
+NeedlemanTest >> testAlignWithWordSequence2Reverse [
+
+	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
+
+	expectedAlign1 := 'INCUESTIONABLE'.
+	expectedAlign2 := 'IMPRES-IONABLE'.
+	expected := expectedAlign1 -> expectedAlign2.
+
+	inputSeq1 := 'INCUESTIONABLE'.
+	inputSeq2 := 'IMPRESIONABLE'.
+
+	aligner align: inputSeq1 with: inputSeq2.
+
+	self
+		assertCollection: aligner firstSequence
+		hasSameElements: expected key.
+
+	self
+		assertCollection: aligner secondSequence
+		hasSameElements: expected value
+]
+
+{ #category : #tests }
+NeedlemanTest >> testAlignWithWordSequence3 [
+
+	| expected expectedAlign1 expectedAlign2 inputSeq1 inputSeq2 |
+
+	expectedAlign1 := 'SIMILARITY'.
+	expectedAlign2 := 'PI-LLAR---'.
+	expected := expectedAlign1 -> expectedAlign2.
+
+	inputSeq1 := 'SIMILARITY'.
+	inputSeq2 := 'PILLAR'.
 
 	aligner align: inputSeq1 with: inputSeq2.
 
