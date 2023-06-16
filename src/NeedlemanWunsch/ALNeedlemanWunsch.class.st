@@ -80,9 +80,12 @@ ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 	lengthSeq1 := seq1 size.
 	lengthSeq2 := seq2 size.
 
+	"Matrix initialisation"
 	score := self zeros: (lengthSeq1 + 1) -> (lengthSeq2 + 1).
+	"Fill first row with gap penalties"
 	0 to: lengthSeq1 do: [ : i |
 		score at: i + 1 at: 1 put: self gapPenalty * i ].
+	"Fill first column with gap penalties"
 	0 to: lengthSeq2 do: [ : j |
 		score at: 1 at: j + 1 put: self gapPenalty * j ].
 
@@ -98,6 +101,7 @@ ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 	ti := lengthSeq1 + 1.
 	tj := lengthSeq2 + 1.
 
+	" Follow the traceback score matrix "
 	[ ti > 1 and: [ tj > 1 ]] whileTrue: [
 		scoreCurrent := score at: ti at: tj.
 		scoreDiagonal := score at: ti - 1 at: tj - 1.
@@ -138,7 +142,7 @@ ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 { #category : #accessing }
 ALNeedlemanWunsch >> alignFromString: seq1 with: seq2 [
 
-	self alignFromSequenceableCollection: seq1 with: seq2.
+	self alignFromSequenceableCollection: seq1 with: seq2 .
 	self firstSequence: (self firstSequence joinUsing: '').
 	self secondSequence: (self secondSequence joinUsing: '')
 ]
