@@ -33,8 +33,8 @@ Given scores for perfect matches, mismatches, and gap penalties, the algorithm w
 Implementation is based on dynamic programming and performs a general ""Global alignment"", it assigns a score to every possible alignment, and find all possible alignments having the highest score. 
 "
 Class {
-	#name : #ALNeedlemanWunsch,
-	#superclass : #Object,
+	#name : 'ALNeedlemanWunsch',
+	#superclass : 'Object',
 	#instVars : [
 		'matchAward',
 		'mismatchPenalty',
@@ -43,10 +43,11 @@ Class {
 		'secondSequence',
 		'gapCharacter'
 	],
-	#category : #NeedlemanWunsch
+	#category : 'NeedlemanWunsch',
+	#package : 'NeedlemanWunsch'
 }
 
-{ #category : #transforming }
+{ #category : 'transforming' }
 ALNeedlemanWunsch class >> align: seq1 with: seq2 [
 	" Answer a new instance of the receiver with the input sequences aligned "
 
@@ -55,7 +56,7 @@ ALNeedlemanWunsch class >> align: seq1 with: seq2 [
 		yourself
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ALNeedlemanWunsch >> align [
 	"Align the receiver's configured sequences. Answer the receiver"
 
@@ -64,13 +65,13 @@ ALNeedlemanWunsch >> align [
 		with: self secondSequence
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ALNeedlemanWunsch >> align: seq1 with: seq2 [
 
 	^ seq1 alignUsingNW: seq2 for: self
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 
 	| lengthSeq1 lengthSeq2 score match delete insert align1 align2 ti tj scoreCurrent scoreDiagonal scoreUp scoreLeft |
@@ -139,7 +140,7 @@ ALNeedlemanWunsch >> alignFromSequenceableCollection: seq1 with: seq2 [
 	self finalize: align1 with: align2
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> alignFromString: seq1 with: seq2 [
 
 	self alignFromSequenceableCollection: seq1 with: seq2 .
@@ -147,7 +148,7 @@ ALNeedlemanWunsch >> alignFromString: seq1 with: seq2 [
 	self secondSequence: (self secondSequence joinUsing: '')
 ]
 
-{ #category : #converting }
+{ #category : 'converting' }
 ALNeedlemanWunsch >> asArray [
 	"Answer the receiver's first and second sequence as <Array>"
 	
@@ -156,14 +157,14 @@ ALNeedlemanWunsch >> asArray [
 		with: self secondSequence
 ]
 
-{ #category : #converting }
+{ #category : 'converting' }
 ALNeedlemanWunsch >> asAssociation [
 	"Answer the receiver's first and second sequence as <Association>"
 	
 	^ self firstSequence -> self secondSequence
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ALNeedlemanWunsch >> finalize: align1 with: align2 [
 
 	| j found score identity |
@@ -193,7 +194,7 @@ ALNeedlemanWunsch >> finalize: align1 with: align2 [
 	identity := identity asFloat / firstSequence size
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> firstSequence [
 	"Answer a <Collection> with the first aligned sequence"
 
@@ -201,37 +202,58 @@ ALNeedlemanWunsch >> firstSequence [
 		ifNil: [ firstSequence := Array new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> firstSequence: anObject [
 
 	firstSequence := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> gapCharacter [
 
 	^ gapCharacter
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> gapCharacter: anObject [
 
 	gapCharacter := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> gapPenalty [
 
 	^ gapPenalty
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> gapPenalty: anObject [
 
 	gapPenalty := anObject
 ]
 
-{ #category : #initialization }
+{ #category : 'instance creation' }
+ALNeedlemanWunsch >> identity [
+	"Answer a <Number> representing the percentage of identity between the two aligned sequences.
+	The percentage of identity measures the proportion of positions in the aligned sequences where the characters are identical.
+	It counts only exact matches between characters in the aligned sequences.
+	Gaps, mismatches, and matches are taken into account to calculate the identity."
+
+    | numOfMatches percentage |
+
+	numOfMatches := (1 to: firstSequence size) 
+		inject: 0 
+		into: [ :sum :i |
+			(firstSequence at: i) = (secondSequence at: i)
+				ifTrue: [ sum + 1 ]
+				ifFalse: [ sum ] ].
+    
+	percentage := (numOfMatches asFloat / firstSequence size asFloat) * 100.
+	^ percentage asScaledDecimal: 2
+
+]
+
+{ #category : 'initialization' }
 ALNeedlemanWunsch >> initialize [
 
 	super initialize.
@@ -241,19 +263,19 @@ ALNeedlemanWunsch >> initialize [
 	gapCharacter := '-'
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> matchAward [
 
 	^ matchAward
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> matchAward: anObject [
 
 	matchAward := anObject
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ALNeedlemanWunsch >> matchScore: alpha with: beta [
 
 	alpha = beta
@@ -264,19 +286,19 @@ ALNeedlemanWunsch >> matchScore: alpha with: beta [
 				ifFalse: [ self mismatchPenalty ] ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> mismatchPenalty [
 
 	^ mismatchPenalty
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> mismatchPenalty: anObject [
 
 	mismatchPenalty := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> secondSequence [
 	"Answer a <Collection> with the second aligned sequence"
 
@@ -284,13 +306,13 @@ ALNeedlemanWunsch >> secondSequence [
 		ifNil: [ secondSequence := Array new ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ALNeedlemanWunsch >> secondSequence: anObject [
 
 	secondSequence := anObject
 ]
 
-{ #category : #'special instance creation' }
+{ #category : 'special instance creation' }
 ALNeedlemanWunsch >> zeros: shapeAssoc [
 	"Answer a new DP matrix "
 

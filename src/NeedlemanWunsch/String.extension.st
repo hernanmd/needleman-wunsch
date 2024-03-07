@@ -1,12 +1,12 @@
-Extension { #name : #String }
+Extension { #name : 'String' }
 
-{ #category : #'*NeedlemanWunsch' }
+{ #category : '*NeedlemanWunsch' }
 String >> alignUsingNW: seq2 for: anAligner [
 
 	^ anAligner alignFromString: self with: seq2
 ]
 
-{ #category : #'*NeedlemanWunsch' }
+{ #category : '*NeedlemanWunsch' }
 String >> alignUsingNWWith: aString [
 	"Answer a new instance of <ALNeedlemanWunsch>, the Needleman-Wunsch aligner calculated for the receiver and aString"
 
